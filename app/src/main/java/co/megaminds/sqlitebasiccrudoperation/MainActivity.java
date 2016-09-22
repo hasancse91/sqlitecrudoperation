@@ -12,18 +12,31 @@ import android.text.Editable;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.List;
+
+import co.megaminds.sqlitebasiccrudoperation.Database.DbHelper;
+
 public class MainActivity extends AppCompatActivity {
+
+    private ListView listView;
+    private List<String> arrayList;
+    private ArrayAdapter<String> arrayAdapter;
+    private long ePID;
+    private DbHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
+        objectInitialization();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -32,6 +45,36 @@ public class MainActivity extends AppCompatActivity {
                 showInputDialog();
             }
         });
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+
+                ePID = id;
+
+                Toast.makeText(getApplicationContext(),
+                        "Click ListItem Number " + ePID, Toast.LENGTH_LONG)
+                        .show();
+            }
+        });
+
+    }
+
+    private void objectInitialization() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        listView = (ListView) findViewById(R.id.listView);
+        dbHelper = new DbHelper(this);
+        arrayList = dbHelper.getAllInformation();
+        arrayAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_list_item_1,
+                arrayList
+        );
+
+        listView.setAdapter(arrayAdapter);
     }
 
     private void showInputDialog() {
@@ -74,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveInformationToDatabase(String name, String phone) {
-
+        dbHelper.insertRecord(name, phone);
     }
 
     @Override
@@ -97,5 +140,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 }

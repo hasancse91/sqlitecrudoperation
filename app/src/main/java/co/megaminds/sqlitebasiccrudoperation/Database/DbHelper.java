@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class DbHelper extends SQLiteOpenHelper {
@@ -59,9 +60,9 @@ public class DbHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public ArrayList<String> getAllInformation(){
+    public List<String> getAllInformation(){
 
-        ArrayList<String> arrayList = new ArrayList<>();
+        List<String> arrayList = new ArrayList<>();
 
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
 
@@ -70,10 +71,16 @@ public class DbHelper extends SQLiteOpenHelper {
 
         while (result.isAfterLast()==false){
             arrayList.add(result.getString(result.getColumnIndex(INFORMATION_TABLE_NAME)));
+            System.out.println("Data Exist "+result.getString(result.getColumnIndex(INFORMATION_TABLE_NAME)));
             result.moveToNext();
         }
 
         return arrayList;
+    }
+
+    public void deleteById(long ePID) {
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        sqLiteDatabase.delete(TABLE_NAME, DbHelper.INFORMATION_TABLE_ID + " = " + ePID, null);
     }
 
 }
