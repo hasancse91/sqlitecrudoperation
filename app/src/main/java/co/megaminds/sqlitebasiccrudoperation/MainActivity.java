@@ -1,14 +1,11 @@
 package co.megaminds.sqlitebasiccrudoperation;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,7 +15,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import java.util.List;
 
 import co.megaminds.sqlitebasiccrudoperation.Database.DbHelper;
@@ -35,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         objectInitialization();
 
@@ -62,8 +60,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void objectInitialization() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         listView = (ListView) findViewById(R.id.listView);
         dbHelper = new DbHelper(this);
@@ -118,6 +114,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void saveInformationToDatabase(String name, String phone) {
         dbHelper.insertRecord(name, phone);
+
+        objectInitialization();
+
     }
 
     @Override
