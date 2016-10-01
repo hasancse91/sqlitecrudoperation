@@ -15,6 +15,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import co.megaminds.sqlitebasiccrudoperation.Database.DbHelper;
@@ -22,7 +24,7 @@ import co.megaminds.sqlitebasiccrudoperation.Database.DbHelper;
 public class MainActivity extends AppCompatActivity {
 
     private ListView listView;
-    private List<String> arrayList;
+    private List<String> arrayList = new ArrayList<>();
     private ArrayAdapter<String> arrayAdapter;
     private long ePID;
     private DbHelper dbHelper;
@@ -31,8 +33,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         objectInitialization();
 
@@ -60,10 +60,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void objectInitialization() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         listView = (ListView) findViewById(R.id.listView);
         dbHelper = new DbHelper(this);
-        arrayList = dbHelper.getAllInformation();
+
         arrayAdapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_list_item_1,
@@ -71,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         );
 
         listView.setAdapter(arrayAdapter);
+        loadData();
     }
 
     private void showInputDialog() {
@@ -114,9 +117,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void saveInformationToDatabase(String name, String phone) {
         dbHelper.insertRecord(name, phone);
+        loadData(); //reload the ListView
+    }
 
-        objectInitialization();
-
+    private void loadData(){
+        arrayList.clear();
+        arrayList.addAll(dbHelper.getAllInformation());
+        arrayAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -141,8 +148,5 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
+
 }
